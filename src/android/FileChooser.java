@@ -13,6 +13,16 @@ import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.Arrays;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+
 public class FileChooser extends CordovaPlugin {
 
     private static final String TAG = "FileChooser";
@@ -30,62 +40,57 @@ public class FileChooser extends CordovaPlugin {
 
         //return false;
         //
-        String mStringArray[] = { args.getString(0), args.getString(1) };
-        JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
+		
+		FileChooser newFile = new FileChooser();
+		JSONArray mJSONArray = newFile.executeFile(args.getString(0));
+		
+ //       String mStringArray[] = { args.getString(0), args.getString(1) };
+ //       JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
 
         callback = callbackContext;
         callback.success(mJSONArray);
         return true;
     }
-
-    public void chooseFile(CallbackContext callbackContext) {
-
-        // type and title should be configurable
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-
-        Intent chooser = Intent.createChooser(intent, "Select File");
-        cordova.startActivityForResult(this, chooser, PICK_FILE_REQUEST);
-
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
-        pluginResult.setKeepCallback(true);
-        callback = callbackContext;
-        callbackContext.sendPluginResult(pluginResult);
+	
+	  
+	private JSONArray executeFile(String fileName) {
+            try {
+            String[] temp = parseFile(fileName);
+            List<Map.Entry<String, Integer>> sortedList = mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue());
+			return new JSONArray(sortedList);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    private String[] parseFile(String fileData) throws IOException {
+        fileData = fileData.replace(System.getProperty("line.separator"), " ").toLowerCase();
+        fileData = fileData.replaceAll("[\\p{Graph}—«»…–?:\uFEFF ]","").replaceAll("  +"," ").trim();
+//        System.out.println(fileData);
+        return fileData.split(" ");
+    }
 
-        if (requestCode == PICK_FILE_REQUEST && callback != null) {
-
-            if (resultCode == Activity.RESULT_OK) {
-
-                Uri uri = data.getData();
-
-                if (uri != null) {
-
-                    Log.w(TAG, uri.toString());
-                    callback.success(uri.toString());
-
-                } else {
-
-                    callback.error("File uri was null");
-
-                }
-
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-
-                // TODO NO_RESULT or error callback?
-                PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
-                callback.sendPluginResult(pluginResult);
-
-            } else {
-
-                callback.error(resultCode);
+    private HashMapToSortedList<String, Integer> mapFile(String[] parsedFileData){
+        System.out.println("Total number of words processed: " + parsedFileData.length);
+        HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList<> ();
+        for(String word : parsedFileData){
+            if(!mapFile.containsKey(word))
+                mapFile.put(word.trim(), 1);
+            else{
+                int count = mapFile.get(word);
+                mapFile.put(word.trim(), count + 1);
             }
         }
+        System.out.println("Number of unique words: " + mapFile.size());
+//        System.out.println(mapFile.get(""));
+        return mapFile;
     }
+	
+	    class HashMapToSortedList<K,V> extends HashMap<K,V> {
+
+        List<Map.Entry<K,V>> mapSort(Comparator<Entry<K, V>> customComparator){
+            ArrayList<Entry<K,V>> arrayList = new ArrayList<>(entrySet());
+            arrayList.sort(customComparator);
+            return arrayList;
+        }
+
+    }
+
 }
