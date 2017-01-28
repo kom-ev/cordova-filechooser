@@ -33,7 +33,7 @@ public class FileChooser extends CordovaPlugin {
         JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
 
         callback = callbackContext;
-        callback.success(11);
+        callback.success(mJSONArray);
         return true;
     }
 
