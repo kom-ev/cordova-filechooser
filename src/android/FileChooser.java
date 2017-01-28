@@ -27,6 +27,7 @@ public class FileChooser extends CordovaPlugin {
         //}
 
         //return false;
+        callback = callbackContext;
         callback.success("chlen");
         return true;
     }
