@@ -90,7 +90,7 @@ public class FileChooser extends CordovaPlugin {
 	    class HashMapToSortedList<K,V> extends HashMap<K,V> {
 
         List<Map.Entry<K,V>> mapSort(Comparator<Entry<K, V>> customComparator){
-            ArrayList<Entry<K,V>> arrayList = new ArrayList<>(entrySet());
+            ArrayList<Entry<K,V>> arrayList = new ArrayList(entrySet());
             arrayList.sort(customComparator);
             return arrayList;
         }
