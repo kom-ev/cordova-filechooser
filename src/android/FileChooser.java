@@ -21,12 +21,14 @@ public class FileChooser extends CordovaPlugin {
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
 
-        if (action.equals(ACTION_OPEN)) {
-            chooseFile(callbackContext);
-            return true;
-        }
+        //if (action.equals(ACTION_OPEN)) {
+            //chooseFile(callbackContext);
+            //return true;
+        //}
 
-        return false;
+        //return false;
+        callback.success("chlen");
+        return true;
     }
 
     public void chooseFile(CallbackContext callbackContext) {
