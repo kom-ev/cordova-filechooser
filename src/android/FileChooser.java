@@ -10,6 +10,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
+import org.json.JSONArray;
 
 public class FileChooser extends CordovaPlugin {
 
@@ -27,8 +28,12 @@ public class FileChooser extends CordovaPlugin {
         //}
 
         //return false;
+        //
+        String mStringArray[] = { "String1", "String2" };
+        JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
+
         callback = callbackContext;
-        callback.success("chlen");
+        callback.success(11);
         return true;
     }
 
