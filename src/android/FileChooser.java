@@ -53,6 +53,7 @@ public class FileChooser extends CordovaPlugin {
 	
 	  
 	private JSONArray executeFile(String fileName) {
+		    try {
             String[] temp = parseFile(fileName);
             List<Map.Entry<String, Integer>> sortedList = mapFile(temp).mapSort(new Comparator<Map.Entry<String, Integer>>() {
                 @Override
@@ -61,6 +62,10 @@ public class FileChooser extends CordovaPlugin {
                 }
             });
 			return new JSONArray(sortedList);
+			} catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String[] parseFile(String fileData) throws IOException {
