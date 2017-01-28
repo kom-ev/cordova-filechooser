@@ -69,7 +69,7 @@ public class FileChooser extends CordovaPlugin {
 
     private HashMapToSortedList<String, Integer> mapFile(String[] parsedFileData){
         System.out.println("Total number of words processed: " + parsedFileData.length);
-        HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList ();
+        HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList<String, Integer> ();
         for(String word : parsedFileData){
             if(!mapFile.containsKey(word))
                 mapFile.put(word.trim(), 1);
@@ -86,7 +86,7 @@ public class FileChooser extends CordovaPlugin {
 	    class HashMapToSortedList<K,V> extends HashMap<K,V> {
 
         List<Map.Entry<K,V>> mapSort(Comparator<Entry<K, V>> customComparator){
-            ArrayList<Entry<K,V>> arrayList = new ArrayList(entrySet());
+            ArrayList<Entry<K,V>> arrayList = new ArrayList<Map.Entry<K,V>>(entrySet());
             arrayList.sort(customComparator);
             return arrayList;
         }
